@@ -1,0 +1,29 @@
+1.依赖：clang、llvm、gcc
+环境：20.04
+均为apt-get install；
+还有autogen，如果文件夹下只有autogen.sh而没有makefile时，需要运行./autogen.sh先生成makefile
+sudo apt-get install autoconf automake libtool
+
+
+2.	wget http://lcamtuf.coredump.cx/afl/releases/afl-latest.tgz，afl安装包
+	tar xvf afl-latest.tgz，解压
+	在其解压好的文件夹下，make，然后sudo make install
+
+3.	输入afl-f，然后自动补全，如果能自动补全，则安装完成
+
+4.	使用：根据文档中的地址下载一个安装包，然后解压。注意，要下载新版本的文件，上古版本可能不支持Ubuntu20.04
+	在其文件夹下，输入：CC=afl-gcc ./configure --disable-shared
+	然后make clean all，等待完成。每个软件可能有不同的依赖，这个我也不知道，根据需求apt-get install即可。
+
+5.	找到项目文件，（先做有目标的几个吧）。以binutils为例，其第一个目标文件在解压文件夹下的/binutiles/readelf
+
+6.	创建一个输入文件夹与输出文件夹，以myin与myout为例。myin中放入需要的输入文件，例如readelf需要elf文件，大部分文件都可以在afl目录下的testcase中找到。
+
+7.	”afl-fuzz -i myin -o myout <待测文件的绝对路径>  @@“	若有参数，在@@之前加。例如
+	afl-fuzz -i myin -o myout /home/wh014/Desktop/binutils-2.39/binutils/readelf -a @@
+	可能会报错，提示你要输入一个指令，那个指令不能直接输，
+	sudo bash -c 'echo core >/proc/sys/kernel/core_pattern'
+	引号里面是他提示的那句。每次重启虚拟机后都得输一遍
+3 4 6 没跑
+1 2 5 7 8 9 10 11 13 14 完成
+12 完成一半

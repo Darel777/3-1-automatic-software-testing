@@ -1,0 +1,46 @@
+	需要clang12，我用别的版本报错
+	也需要llvm
+
+1.	安装：参考mull官方文档：https://mull.readthedocs.io/en/0.19.0/Installation.html
+	默认大家用的20.04系统
+	以下是命令：
+
+	curl -1sLf 'https://dl.cloudsmith.io/public/mull-project/mull-stable/setup.deb.sh' | sudo -E bash
+	sudo apt-get update
+	sudo apt-get install mull-12
+	
+	完成后输入
+	mull-runner-12 --version
+	以检测是否正常。
+
+
+2.	！！插桩时请解压一个文件，不然make时会报错cflags被更改。目前没找到好的办法，重新解压一个吧。
+	
+	mull有配置文件mull.yml，此文件可有可无，如果没有配置文件或者未检测到，会提示警告，并使用默认的配置。
+	具体写法参照手册Configuring Mull界面。如果有配置文件的话，在最开始加入到项目的文件夹中即可。
+
+	插桩：在目标文件目录下打开终端，依次输入以下指令：	
+
+	export CC=clang-12
+	export CFLAGS="-o0 -fexperimental-new-pass-manager -fpass-plugin=/usr/lib/mull-ir-frontend-12 -g -grecord-command-line"
+	./configure
+	make
+
+	如果没有./configure，请在设置CFLAGS后好后运行
+	./autogen.sh
+	以生成./configure文件，然后运行./configure
+
+	看起来很简单，下面是我遇到的bug：
+	(1)运行./configure时报错，报错内容为：C compiler cannot create executables
+	原因：CFLAGS与某些默认设置冲突
+	解决办法：删掉CFLAGS中的某一项，一般来说删除-o0即可。
+	（2）运行make时报错`.rodata‘ can not be used when making a PIE object
+	原因：动态编译什么的，不太懂
+	解决方法：在CFLAGS后加上-fpic。即命令变为
+	export CFLAGS="-o0 -fexperimental-new-pass-manager -fpass-plugin=/usr/lib/mull-ir-frontend-12 -g -grecord-command-line -fpic"
+	此时再make有可能报错cflags被更改，再开一个文件吧
+	(3)make时报错/bin/bash: line 1: 189469 Killed ，进程在某一行被kill
+	原因：mull的配置文件过于复杂导致内存爆炸
+	解决方法：mull的配置文件要简单一点
+
+	估计会有更多不同的bug，大家共勉  

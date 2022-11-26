@@ -1,0 +1,24 @@
+1.	确认你的待测程序已经被插桩好，如果运行mull时倒数第二行显示
+	[info] No mutants found. Mutation score: infinitely high
+	这表示你的mull没有被插桩好。一般来说，将CFLAGS中的-o0删掉，再次./configure和make即可。
+
+2.	打开脚本，更改相应参数。一般来说只需要更改最下面的target_file与input_dir即可
+	target_file是待测文件的绝对地址
+	input_dir是输入文件的文件夹的绝对路径。
+	！！！注意，input_dir的最后要写一个反斜杠/
+	
+3.	运行，输入
+	./testshall.sh
+	然后他就开始运行了。
+
+4.	可能遇到的bug：
+	报错：/bin/bash^M: bad interpreter: No such file or directory
+	报错原因：Windows编码与Linux不同。
+	解决方法：在命令行中输入
+	dos2unix testshall.sh
+	将文件转换为unix格式
+	有可能会提示没有dos2unix命令，sudo apt install dos2unix即可
+	暂时没遇到过其他报错。
+
+5.	最后，testshall.sh是脚本的名字，可以随便改
+	wh014是我的ID，那个是路径，改掉就好了。这个ID我初中就开始用了，没有任何特殊含义
